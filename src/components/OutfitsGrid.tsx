@@ -18,13 +18,14 @@ export function OutfitsGrid({ outfits, onDelete }: OutfitsGridProps) {
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      {outfits.map((outfit) => (
+      {outfits.map((outfit, index) => (
         <div
           key={outfit.id}
-          className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in border border-border"
+          className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in border border-border transition-transform duration-300 hover:-translate-y-1"
+          style={{ animationDelay: `${index * 55}ms` }}
         >
           {/* Outfit display */}
-          <div className="h-full w-full flex items-center justify-center p-4 bg-card/50">
+          <div className="h-full w-full flex items-center justify-center p-4 bg-card/50 transition-transform duration-300 group-hover:scale-[1.02]">
             <div className="relative w-full h-full flex flex-col items-center justify-center gap-1">
               {/* Top */}
               {outfit.top && (

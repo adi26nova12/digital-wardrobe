@@ -18,15 +18,16 @@ export function WardrobeGrid({ items, onDelete }: WardrobeGridProps) {
 
   return (
     <div className="grid grid-cols-2 gap-3">
-      {items.map((item) => (
+      {items.map((item, index) => (
         <div
           key={item.id}
-          className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in"
+          className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in transition-transform duration-300 hover:-translate-y-1"
+          style={{ animationDelay: `${index * 55}ms` }}
         >
           <img
             src={item.imageUrl}
             alt={item.category}
-            className="h-full w-full object-contain p-4"
+            className="h-full w-full object-contain p-4 transition-transform duration-300 group-hover:scale-[1.03]"
             loading="lazy"
           />
           <button

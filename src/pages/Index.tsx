@@ -17,8 +17,8 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm px-5 pt-8 pb-4">
+    <div className="min-h-screen bg-background animate-rise-in">
+      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm px-5 pt-8 pb-4 animate-rise-in [animation-delay:80ms]">
         <button onClick={() => navigate("/")} className="flex items-center gap-1 text-sm text-muted-foreground font-body mb-3 hover:text-foreground transition-colors">
           <ChevronLeft className="h-4 w-4" /> Home
         </button>
@@ -30,7 +30,7 @@ const Index = () => {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-4 border-b border-border">
+        <div className="flex gap-2 mb-4 border-b border-border animate-rise-in [animation-delay:140ms]">
           <button
             onClick={() => setActiveTab("wardrobe")}
             className={cn(
@@ -61,7 +61,7 @@ const Index = () => {
         )}
       </header>
 
-      <main className="px-5 pb-24">
+      <main key={activeTab} className="px-5 pb-24 animate-rise-in [animation-delay:120ms]">
         {activeTab === "wardrobe" ? (
           <WardrobeGrid items={items} onDelete={deleteItem} />
         ) : (
@@ -72,10 +72,10 @@ const Index = () => {
       {/* FAB */}
       <button
         onClick={() => activeTab === "wardrobe" ? setSheetOpen(true) : setOutfitBuilderOpen(true)}
-        className="fixed bottom-8 right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
+        className="group fixed bottom-8 right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95 animate-rise-in [animation-delay:240ms]"
         aria-label={activeTab === "wardrobe" ? "Add clothing item" : "Create outfit"}
       >
-        <Plus className="h-6 w-6" />
+        <Plus className="h-6 w-6 transition-transform duration-300 group-hover:rotate-90" />
       </button>
 
       <AddItemSheet
