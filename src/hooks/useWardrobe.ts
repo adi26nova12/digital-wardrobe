@@ -1,8 +1,9 @@
 import { useState, useCallback } from "react";
-import type { WardrobeItem, ClothingCategory } from "@/types/wardrobe";
+import type { WardrobeItem, ClothingCategory, Outfit } from "@/types/wardrobe";
 import { sampleItems } from "@/data/sampleItems";
 
 const STORAGE_KEY = "wardrobe_items";
+const OUTFITS_STORAGE_KEY = "wardrobe_outfits";
 const INITIALIZED_KEY = "wardrobe_initialized";
 
 function loadItems(): WardrobeItem[] {
@@ -20,12 +21,26 @@ function loadItems(): WardrobeItem[] {
   }
 }
 
+function loadOutfits(): Outfit[] {
+  try {
+    const data = localStorage.getItem(OUTFITS_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
 function saveItems(items: WardrobeItem[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 }
 
+function saveOutfits(outfits: Outfit[]) {
+  localStorage.setItem(OUTFITS_STORAGE_KEY, JSON.stringify(outfits));
+}
+
 export function useWardrobe() {
   const [items, setItems] = useState<WardrobeItem[]>(loadItems);
+  const [outfits, setOutfits] = useState<Outfit[]>(loadOutfits);
   const [activeFilter, setActiveFilter] = useState<ClothingCategory>("All");
 
   const addItem = useCallback((item: Omit<WardrobeItem, "id" | "createdAt">) => {
@@ -49,8 +64,39 @@ export function useWardrobe() {
     });
   }, []);
 
+  const addOutfit = useCallback((outfit: Omit<Outfit, "id" | "createdAt">) => {
+    const newOutfit: Outfit = {
+      ...outfit,
+      id: crypto.randomUUID(),
+      createdAt: Date.now(),
+    };
+    setOutfits((prev) => {
+      const updated = [newOutfit, ...prev];
+      saveOutfits(updated);
+      return updated;
+    });
+  }, []);
+
+  const deleteOutfit = useCallback((id: string) => {
+    setOutfits((prev) => {
+      const updated = prev.filter((outfit) => outfit.id !== id);
+      saveOutfits(updated);
+      return updated;
+    });
+  }, []);
+
   const filteredItems =
     activeFilter === "All" ? items : items.filter((item) => item.category === activeFilter);
 
-  return { items: filteredItems, allItems: items, activeFilter, setActiveFilter, addItem, deleteItem };
+  return { 
+    items: filteredItems, 
+    allItems: items, 
+    activeFilter, 
+    setActiveFilter, 
+    addItem, 
+    deleteItem,
+    outfits,
+    addOutfit,
+    deleteOutfit,
+  };
 }
