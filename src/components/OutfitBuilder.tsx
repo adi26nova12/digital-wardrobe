@@ -14,7 +14,7 @@ export function OutfitBuilder({ items, open, onClose, onAdd }: OutfitBuilderProp
   const [selectedBottom, setSelectedBottom] = useState<WardrobeItem | undefined>();
   const [selectedShoes, setSelectedShoes] = useState<WardrobeItem | undefined>();
 
-  const tops = items.filter((item) => item.category === "Tops");
+  const tops = items.filter((item) => item.category === "Tops" || item.category === "Outerwear");
   const bottoms = items.filter((item) => item.category === "Bottoms");
   const shoes = items.filter((item) => item.category === "Shoes");
 
@@ -92,10 +92,10 @@ export function OutfitBuilder({ items, open, onClose, onAdd }: OutfitBuilderProp
 
             {/* Categories */}
             <div className="space-y-6">
-              {/* Tops */}
+              {/* Tops & Outerwear */}
               {tops.length > 0 && (
                 <div>
-                  <h3 className="font-display text-lg font-semibold mb-3">Tops</h3>
+                  <h3 className="font-display text-lg font-semibold mb-3">Tops & Outerwear</h3>
                   <div className="grid grid-cols-3 gap-2">
                     {tops.map((item) => (
                       <button
