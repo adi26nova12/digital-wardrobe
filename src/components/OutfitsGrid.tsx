@@ -21,41 +21,49 @@ export function OutfitsGrid({ outfits, onDelete }: OutfitsGridProps) {
       {outfits.map((outfit, index) => (
         <div
           key={outfit.id}
+<<<<<<< HEAD
           className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in border border-border transition-transform duration-300 hover:-translate-y-1"
           style={{ animationDelay: `${index * 55}ms` }}
         >
           {/* Outfit display */}
           <div className="h-full w-full flex items-center justify-center p-4 bg-card/50 transition-transform duration-300 group-hover:scale-[1.02]">
             <div className="relative w-full h-full flex flex-col items-center justify-center gap-1">
+=======
+          className="group relative aspect-square rounded-lg bg-gradient-to-b from-secondary/30 to-secondary/10 overflow-hidden animate-fade-in border border-border"
+        >
+          {/* Outfit display */}
+          <div className="h-full w-full flex items-center justify-center p-4 bg-card/50">
+            <div className="relative w-full h-full flex flex-col items-center justify-start gap-0">
+>>>>>>> 054d590 (sizing of outfits)
               {/* Top */}
               {outfit.top && (
-                <div className="absolute top-2 w-20 h-16 flex items-center justify-center">
+                <div className="flex items-start justify-center pt-1" style={{ flex: "0 0 30%" }}>
                   <img
                     src={outfit.top.imageUrl}
                     alt="top"
-                    className="h-full w-full object-contain"
+                    className="h-full w-auto max-w-[75%] object-contain"
                   />
                 </div>
               )}
 
               {/* Bottom */}
               {outfit.bottom && (
-                <div className="absolute top-20 w-20 h-20 flex items-center justify-center">
+                <div className="flex items-center justify-center -mt-2" style={{ flex: "0 0 45%" }}>
                   <img
                     src={outfit.bottom.imageUrl}
                     alt="bottom"
-                    className="h-full w-full object-contain"
+                    className="h-full w-auto max-w-[80%] object-contain"
                   />
                 </div>
               )}
 
               {/* Shoes */}
               {outfit.shoes && (
-                <div className="absolute bottom-2 w-24 h-12 flex items-center justify-center">
+                <div className="flex items-end justify-center -mt-1" style={{ flex: "0 0 25%" }}>
                   <img
                     src={outfit.shoes.imageUrl}
                     alt="shoes"
-                    className="h-full w-full object-contain"
+                    className="h-full w-auto max-w-[85%] object-contain"
                   />
                 </div>
               )}

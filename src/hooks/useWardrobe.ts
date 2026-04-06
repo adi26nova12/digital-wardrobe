@@ -24,7 +24,9 @@ function loadItems(): WardrobeItem[] {
 function loadOutfits(): Outfit[] {
   try {
     const data = localStorage.getItem(OUTFITS_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    const result = data ? JSON.parse(data) : [];
+    console.log("📂 Loaded outfits from localStorage:", result);
+    return result;
   } catch {
     return [];
   }
@@ -35,7 +37,9 @@ function saveItems(items: WardrobeItem[]) {
 }
 
 function saveOutfits(outfits: Outfit[]) {
+  console.log("💾 Saving outfits to localStorage:", outfits);
   localStorage.setItem(OUTFITS_STORAGE_KEY, JSON.stringify(outfits));
+  console.log("✅ Outfits saved. Current localStorage:", localStorage.getItem(OUTFITS_STORAGE_KEY));
 }
 
 export function useWardrobe() {
@@ -65,11 +69,13 @@ export function useWardrobe() {
   }, []);
 
   const addOutfit = useCallback((outfit: Omit<Outfit, "id" | "createdAt">) => {
+    console.log("🎯 addOutfit called with:", outfit);
     const newOutfit: Outfit = {
       ...outfit,
       id: crypto.randomUUID(),
       createdAt: Date.now(),
     };
+    console.log("📝 Creating new outfit:", newOutfit);
     setOutfits((prev) => {
       const updated = [newOutfit, ...prev];
       saveOutfits(updated);

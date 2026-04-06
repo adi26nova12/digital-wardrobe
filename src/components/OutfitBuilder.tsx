@@ -20,6 +20,7 @@ export function OutfitBuilder({ items, open, onClose, onAdd }: OutfitBuilderProp
 
   const handleAddOutfit = () => {
     if (selectedTop || selectedBottom || selectedShoes) {
+      console.log("📸 Saving outfit:", { selectedTop, selectedBottom, selectedShoes });
       onAdd({
         top: selectedTop,
         bottom: selectedBottom,
