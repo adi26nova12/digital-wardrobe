@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, X, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,6 +18,7 @@ interface OutfitCalendarProps {
   getOutfitForDate: (dateISO: string) => Outfit | undefined;
   onMarkAsWorn?: (scheduleId: string) => void;
   onUnmarkAsWorn?: (scheduleId: string) => void;
+  recommendations?: Outfit[];
 }
 
 export function OutfitCalendar({
@@ -28,6 +29,7 @@ export function OutfitCalendar({
   getOutfitForDate,
   onMarkAsWorn,
   onUnmarkAsWorn,
+  recommendations = [],
 }: OutfitCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -129,21 +131,27 @@ export function OutfitCalendar({
                 <DialogTrigger asChild>
                   <button
                     onClick={() => setSelectedDate(dateISO)}
-                    className={`aspect-square rounded-md p-1 text-xs font-medium transition-all hover:bg-accent flex flex-col items-center justify-center gap-1 cursor-pointer ${
+                    className={`aspect-square rounded-md p-0.5 text-xs font-medium transition-all hover:bg-accent flex flex-col items-center justify-start gap-0 cursor-pointer overflow-hidden relative ${
                       today
                         ? "bg-primary/10 border-2 border-primary"
                         : "bg-card border border-border hover:border-foreground/20"
                     } ${outfit ? "ring-2 ring-primary/50" : ""}`}
                   >
-                    <span className="font-semibold text-sm">{day}</span>
-                    {outfit && (
-                      <div className="w-full h-6 rounded overflow-hidden">
-                        <img
-                          src={outfit.top?.imageUrl || outfit.bottom?.imageUrl || outfit.shoes?.imageUrl || ""}
-                          alt="outfit"
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
+                    {outfit ? (
+                      <>
+                        <div className="w-full h-full rounded overflow-hidden flex flex-col items-center justify-center">
+                          <img
+                            src={outfit.top?.imageUrl || outfit.bottom?.imageUrl || outfit.shoes?.imageUrl || ""}
+                            alt="outfit"
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="absolute top-0.5 left-0.5 bg-black/50 rounded px-1 py-0.5 text-white text-xs font-semibold leading-none">
+                          {day}
+                        </div>
+                      </>
+                    ) : (
+                      <span className="font-semibold text-xs leading-none">{day}</span>
                     )}
                   </button>
                 </DialogTrigger>
@@ -155,12 +163,12 @@ export function OutfitCalendar({
                     </DialogTitle>
                   </DialogHeader>
 
-                  <div className="space-y-4">
+                  <div className="space-y-2">
                     {outfit ? (
                       <>
-                        <div className="bg-card rounded-lg border border-border p-4">
-                          <h3 className="text-sm font-semibold mb-3">Current Outfit</h3>
-                          <div className="aspect-square rounded-lg bg-card/50 flex items-center justify-center p-4 relative w-full">
+                        <div className="bg-card rounded-lg border border-border p-3">
+                          <h3 className="text-xs font-semibold mb-2">Current Outfit</h3>
+                          <div className="h-40 rounded-lg bg-card/50 flex items-center justify-center p-2 relative w-full">
                             {outfit.top && (
                               <div className="absolute top-[4%] left-1/2 h-[44%] w-[78%] -translate-x-1/2 flex items-center justify-center">
                                 <img
@@ -189,7 +197,7 @@ export function OutfitCalendar({
                               </div>
                             )}
                           </div>
-                          <div className="flex gap-2 mt-4">
+                          <div className="flex gap-1 mt-3">
                             {(() => {
                               const scheduleEntry = schedule.find((s) => s.dateISO === dateISO);
                               return (
@@ -203,7 +211,7 @@ export function OutfitCalendar({
                                     className="flex-1"
                                     size="sm"
                                   >
-                                    <X className="h-4 w-4 mr-2" />
+                                    <X className="h-3 w-3 mr-1" />
                                     Remove
                                   </Button>
                                   {scheduleEntry && onMarkAsWorn && (
@@ -215,8 +223,8 @@ export function OutfitCalendar({
                                       className="flex-1"
                                       size="sm"
                                     >
-                                      <Check className="h-4 w-4 mr-2" />
-                                      {scheduleEntry.worn ? "Worn" : "Mark Worn"}
+                                      <Check className="h-3 w-3 mr-1" />
+                                      {scheduleEntry.worn ? "Worn" : "Mark"}
                                     </Button>
                                   )}
                                 </>
@@ -224,58 +232,119 @@ export function OutfitCalendar({
                             })()}
                           </div>
                         </div>
-                        <div className="border-t pt-4">
-                          <h3 className="text-sm font-semibold mb-3">Or choose another:</h3>
+                        <div className="border-t pt-2">
+                          <h3 className="text-xs font-semibold mb-2">Or choose another:</h3>
                         </div>
                       </>
                     ) : (
                       <p className="text-sm text-muted-foreground">No outfit scheduled for this date</p>
                     )}
 
-                    <div className="grid grid-cols-2 gap-3 max-h-[300px] overflow-y-auto">
-                      {outfits.map((outfitOption) => (
-                        <button
-                          key={outfitOption.id}
-                          onClick={() => {
-                            onScheduleOutfit(outfitOption.id, dateISO);
-                            setSelectedDate(null);
-                          }}
-                          className="group relative aspect-square rounded-lg bg-card overflow-hidden border border-border transition-all hover:border-foreground/30 hover:scale-105"
-                        >
-                          <div className="h-full w-full flex items-center justify-center p-2 bg-card/50">
-                            <div className="relative h-full w-full">
-                              {outfitOption.top && (
-                                <div className="absolute top-[4%] left-1/2 h-[44%] w-[78%] -translate-x-1/2 flex items-center justify-center">
-                                  <img
-                                    src={outfitOption.top.imageUrl}
-                                    alt="top"
-                                    className="h-full w-full object-contain"
-                                  />
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                      {outfits.length > 0 && (
+                        <div>
+                          <h4 className="text-xs font-semibold mb-2">Your Outfits</h4>
+                          <div className="grid grid-cols-3 gap-2">
+                            {outfits.map((outfitOption) => (
+                              <button
+                                key={outfitOption.id}
+                                onClick={() => {
+                                  onScheduleOutfit(outfitOption.id, dateISO);
+                                  setSelectedDate(null);
+                                }}
+                                className="group relative aspect-square rounded-lg bg-card overflow-hidden border border-border transition-all hover:border-foreground/30 hover:scale-105"
+                              >
+                                <div className="h-full w-full flex items-center justify-center p-2 bg-card/50">
+                                  <div className="relative h-full w-full">
+                                    {outfitOption.top && (
+                                      <div className="absolute top-[4%] left-1/2 h-[44%] w-[78%] -translate-x-1/2 flex items-center justify-center">
+                                        <img
+                                          src={outfitOption.top.imageUrl}
+                                          alt="top"
+                                          className="h-full w-full object-contain"
+                                        />
+                                      </div>
+                                    )}
+                                    {outfitOption.bottom && (
+                                      <div className="absolute top-[42%] left-1/2 h-[46%] w-[76%] -translate-x-1/2 flex items-center justify-center">
+                                        <img
+                                          src={outfitOption.bottom.imageUrl}
+                                          alt="bottom"
+                                          className="h-full w-full object-contain"
+                                        />
+                                      </div>
+                                    )}
+                                    {outfitOption.shoes && (
+                                      <div className="absolute bottom-[2%] left-1/2 h-[18%] w-[86%] -translate-x-1/2 flex items-center justify-center">
+                                        <img
+                                          src={outfitOption.shoes.imageUrl}
+                                          alt="shoes"
+                                          className="h-full w-full object-contain"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
-                              )}
-                              {outfitOption.bottom && (
-                                <div className="absolute top-[42%] left-1/2 h-[46%] w-[76%] -translate-x-1/2 flex items-center justify-center">
-                                  <img
-                                    src={outfitOption.bottom.imageUrl}
-                                    alt="bottom"
-                                    className="h-full w-full object-contain"
-                                  />
-                                </div>
-                              )}
-                              {outfitOption.shoes && (
-                                <div className="absolute bottom-[2%] left-1/2 h-[18%] w-[86%] -translate-x-1/2 flex items-center justify-center">
-                                  <img
-                                    src={outfitOption.shoes.imageUrl}
-                                    alt="shoes"
-                                    className="h-full w-full object-contain"
-                                  />
-                                </div>
-                              )}
-                            </div>
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-lg" />
+                              </button>
+                            ))}
                           </div>
-                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-lg" />
-                        </button>
-                      ))}
+                        </div>
+                      )}
+
+                      {recommendations.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-1 mb-2">
+                            <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                            <h4 className="text-xs font-semibold">Suggested</h4>
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            {recommendations.map((outfitOption) => (
+                              <button
+                                key={outfitOption.id}
+                                onClick={() => {
+                                  onScheduleOutfit(outfitOption.id, dateISO);
+                                  setSelectedDate(null);
+                                }}
+                                className="group relative aspect-square rounded-lg bg-card overflow-hidden border border-amber-200/50 transition-all hover:border-amber-400 hover:scale-105"
+                              >
+                                <div className="h-full w-full flex items-center justify-center p-2 bg-card/50">
+                                  <div className="relative h-full w-full">
+                                    {outfitOption.top && (
+                                      <div className="absolute top-[4%] left-1/2 h-[44%] w-[78%] -translate-x-1/2 flex items-center justify-center">
+                                        <img
+                                          src={outfitOption.top.imageUrl}
+                                          alt="top"
+                                          className="h-full w-full object-contain"
+                                        />
+                                      </div>
+                                    )}
+                                    {outfitOption.bottom && (
+                                      <div className="absolute top-[42%] left-1/2 h-[46%] w-[76%] -translate-x-1/2 flex items-center justify-center">
+                                        <img
+                                          src={outfitOption.bottom.imageUrl}
+                                          alt="bottom"
+                                          className="h-full w-full object-contain"
+                                        />
+                                      </div>
+                                    )}
+                                    {outfitOption.shoes && (
+                                      <div className="absolute bottom-[2%] left-1/2 h-[18%] w-[86%] -translate-x-1/2 flex items-center justify-center">
+                                        <img
+                                          src={outfitOption.shoes.imageUrl}
+                                          alt="shoes"
+                                          className="h-full w-full object-contain"
+                                        />
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors rounded-lg" />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </DialogContent>

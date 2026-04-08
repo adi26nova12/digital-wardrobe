@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Calendar } from "lucide-react";
 import { OutfitCalendar } from "@/components/OutfitCalendar";
+import { RecommendationsScheduler } from "@/components/RecommendationsScheduler";
 import { useWardrobe } from "@/hooks/useWardrobe";
+import { createRecommendations } from "@/lib/recommendations";
 
 const CalendarPage = () => {
   const navigate = useNavigate();
-  const { outfits, schedule, scheduleOutfit, removeSchedule, getOutfitForDate, markOutfitAsWorn, unmarkOutfitAsWorn } = useWardrobe();
+  const { allItems, outfits, schedule, scheduleOutfit, removeSchedule, getOutfitForDate, markOutfitAsWorn, unmarkOutfitAsWorn } = useWardrobe();
+  
+  const recommendations = createRecommendations(allItems, outfits);
 
   return (
     <div className="min-h-screen bg-background animate-rise-in">
@@ -40,15 +44,25 @@ const CalendarPage = () => {
             </button>
           </div>
         ) : (
-          <OutfitCalendar
-            outfits={outfits}
-            schedule={schedule}
-            onScheduleOutfit={scheduleOutfit}
-            onRemoveSchedule={removeSchedule}
-            getOutfitForDate={getOutfitForDate}
-            onMarkAsWorn={markOutfitAsWorn}
-            onUnmarkAsWorn={unmarkOutfitAsWorn}
-          />
+          <div className="space-y-8">
+            <OutfitCalendar
+              outfits={outfits}
+              schedule={schedule}
+              onScheduleOutfit={scheduleOutfit}
+              onRemoveSchedule={removeSchedule}
+              getOutfitForDate={getOutfitForDate}
+              onMarkAsWorn={markOutfitAsWorn}
+              onUnmarkAsWorn={unmarkOutfitAsWorn}
+              recommendations={recommendations}
+            />
+
+            {recommendations.length > 0 && (
+              <RecommendationsScheduler
+                recommendations={recommendations}
+                onScheduleOutfit={scheduleOutfit}
+              />
+            )}
+          </div>
         )}
       </main>
     </div>
