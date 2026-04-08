@@ -5,6 +5,7 @@ export interface WardrobeItem {
   id: string;
   imageUrl: string;
   category: Exclude<ClothingCategory, "All">;
+  tag?: string; // Optional label/name for the item
   createdAt: number;
   wearCount?: number; // Track how many times item was worn
 }

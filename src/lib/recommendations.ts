@@ -1,7 +1,7 @@
 import type { Outfit, WardrobeItem } from "@/types/wardrobe";
 
 export function hasStableImage(item: WardrobeItem) {
-  return Boolean(item.imageUrl) && !item.imageUrl.startsWith("blob:");
+  return Boolean(item.imageUrl);
 }
 
 // Seeded random number generator for reproducible shuffling
