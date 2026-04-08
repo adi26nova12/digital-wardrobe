@@ -1,9 +1,10 @@
 import { useState, useCallback } from "react";
-import type { WardrobeItem, ClothingCategory, Outfit } from "@/types/wardrobe";
+import type { WardrobeItem, ClothingCategory, Outfit, OutfitSchedule } from "@/types/wardrobe";
 import { sampleItems } from "@/data/sampleItems";
 
 const STORAGE_KEY = "wardrobe_items";
 const OUTFITS_STORAGE_KEY = "wardrobe_outfits";
+const SCHEDULE_STORAGE_KEY = "wardrobe_schedule";
 const INITIALIZED_KEY = "wardrobe_initialized";
 
 function loadItems(): WardrobeItem[] {
@@ -32,6 +33,15 @@ function loadOutfits(): Outfit[] {
   }
 }
 
+function loadSchedule(): OutfitSchedule[] {
+  try {
+    const data = localStorage.getItem(SCHEDULE_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
 function saveItems(items: WardrobeItem[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 }
@@ -42,9 +52,14 @@ function saveOutfits(outfits: Outfit[]) {
   console.log("✅ Outfits saved. Current localStorage:", localStorage.getItem(OUTFITS_STORAGE_KEY));
 }
 
+function saveSchedule(schedule: OutfitSchedule[]) {
+  localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(schedule));
+}
+
 export function useWardrobe() {
   const [items, setItems] = useState<WardrobeItem[]>(loadItems);
   const [outfits, setOutfits] = useState<Outfit[]>(loadOutfits);
+  const [schedule, setSchedule] = useState<OutfitSchedule[]>(loadSchedule);
   const [activeFilter, setActiveFilter] = useState<ClothingCategory>("All");
 
   const addItem = useCallback((item: Omit<WardrobeItem, "id" | "createdAt">) => {
@@ -91,6 +106,72 @@ export function useWardrobe() {
     });
   }, []);
 
+  const scheduleOutfit = useCallback((outfitId: string, dateISO: string) => {
+    setSchedule((prev) => {
+      const existing = prev.find((s) => s.dateISO === dateISO);
+      let updated: OutfitSchedule[];
+      
+      if (existing) {
+        // Replace existing outfit on that date
+        updated = prev.map((s) =>
+          s.dateISO === dateISO
+            ? { ...s, outfitId }
+            : s
+        );
+      } else {
+        // Add new schedule entry
+        const newSchedule: OutfitSchedule = {
+          id: crypto.randomUUID(),
+          outfitId,
+          dateISO,
+          createdAt: Date.now(),
+        };
+        updated = [newSchedule, ...prev];
+      }
+      
+      saveSchedule(updated);
+      return updated;
+    });
+  }, []);
+
+  const removeSchedule = useCallback((dateISO: string) => {
+    setSchedule((prev) => {
+      const updated = prev.filter((s) => s.dateISO !== dateISO);
+      saveSchedule(updated);
+      return updated;
+    });
+  }, []);
+
+  const getOutfitForDate = useCallback((dateISO: string): Outfit | undefined => {
+    const scheduleEntry = schedule.find((s) => s.dateISO === dateISO);
+    if (!scheduleEntry) return undefined;
+    return outfits.find((o) => o.id === scheduleEntry.outfitId);
+  }, [schedule, outfits]);
+
+  const markOutfitAsWorn = useCallback((scheduleId: string) => {
+    setSchedule((prev) => {
+      const updated = prev.map((s) =>
+        s.id === scheduleId
+          ? { ...s, worn: true, wornDate: Date.now() }
+          : s
+      );
+      saveSchedule(updated);
+      return updated;
+    });
+  }, []);
+
+  const unmarkOutfitAsWorn = useCallback((scheduleId: string) => {
+    setSchedule((prev) => {
+      const updated = prev.map((s) =>
+        s.id === scheduleId
+          ? { ...s, worn: false, wornDate: undefined }
+          : s
+      );
+      saveSchedule(updated);
+      return updated;
+    });
+  }, []);
+
   const filteredItems =
     activeFilter === "All" ? items : items.filter((item) => item.category === activeFilter);
 
@@ -104,5 +185,11 @@ export function useWardrobe() {
     outfits,
     addOutfit,
     deleteOutfit,
+    schedule,
+    scheduleOutfit,
+    removeSchedule,
+    getOutfitForDate,
+    markOutfitAsWorn,
+    unmarkOutfitAsWorn,
   };
 }

@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Sparkles } from "lucide-react";
+import { ChevronLeft, Sparkles, RotateCw } from "lucide-react";
 import { RecommendedOutfitsGrid } from "@/components/RecommendedOutfitsGrid";
+import { Button } from "@/components/ui/button";
 import { useWardrobe } from "@/hooks/useWardrobe";
 import type { Outfit, WardrobeItem } from "@/types/wardrobe";
 
@@ -9,7 +10,13 @@ function hasStableImage(item: WardrobeItem) {
   return Boolean(item.imageUrl) && !item.imageUrl.startsWith("blob:");
 }
 
-function createRecommendations(items: WardrobeItem[], savedOutfits: Outfit[]): Outfit[] {
+// Seeded random number generator for reproducible shuffling
+function seededRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function createRecommendations(items: WardrobeItem[], savedOutfits: Outfit[], seed: number = 0): Outfit[] {
   const stableItems = items.filter(hasStableImage);
   const tops = stableItems.filter((item) => item.category === "Tops" || item.category === "Outerwear");
   const bottoms = stableItems.filter((item) => item.category === "Bottoms");
@@ -28,9 +35,13 @@ function createRecommendations(items: WardrobeItem[], savedOutfits: Outfit[]): O
   let cursor = 0;
 
   while (recommendations.length < total && cursor < total * 4) {
-    const top = tops[cursor % tops.length];
-    const bottom = bottoms[(cursor * 2 + 1) % bottoms.length];
-    const shoe = shoes[(cursor * 3 + 2) % shoes.length];
+    const topIndex = Math.floor(seededRandom(seed + cursor) * tops.length);
+    const bottomIndex = Math.floor(seededRandom(seed + cursor + 1000) * bottoms.length);
+    const shoeIndex = Math.floor(seededRandom(seed + cursor + 2000) * shoes.length);
+
+    const top = tops[topIndex];
+    const bottom = bottoms[bottomIndex];
+    const shoe = shoes[shoeIndex];
     const key = `${top.id}-${bottom.id}-${shoe.id}`;
 
     if (!existingKeys.has(key)) {
@@ -53,8 +64,13 @@ function createRecommendations(items: WardrobeItem[], savedOutfits: Outfit[]): O
 const Recommendations = () => {
   const navigate = useNavigate();
   const { allItems, outfits } = useWardrobe();
+  const [rerollSeed, setRerollSeed] = useState(0);
 
-  const recommendations = useMemo(() => createRecommendations(allItems, outfits), [allItems, outfits]);
+  const recommendations = useMemo(() => createRecommendations(allItems, outfits, rerollSeed), [allItems, outfits, rerollSeed]);
+
+  const handleReroll = () => {
+    setRerollSeed((prev) => prev + 1);
+  };
 
   return (
     <div className="min-h-screen bg-background animate-rise-in">
@@ -65,7 +81,20 @@ const Recommendations = () => {
 
         <div className="flex items-center justify-between gap-3 mb-1">
           <h1 className="font-display text-3xl font-semibold tracking-tight">Recommendations</h1>
-          <Sparkles className="h-5 w-5 text-muted-foreground" />
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-muted-foreground" />
+            {recommendations.length > 0 && (
+              <Button
+                onClick={handleReroll}
+                variant="ghost"
+                size="sm"
+                className="gap-1"
+                title="Generate new recommendations"
+              >
+                <RotateCw className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
 
         <p className="text-sm text-muted-foreground font-body">

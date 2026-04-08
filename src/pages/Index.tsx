@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, ChevronLeft } from "lucide-react";
+import { Plus, ChevronLeft, Calendar, BarChart3 } from "lucide-react";
 import { FilterChips } from "@/components/FilterChips";
 import { WardrobeGrid } from "@/components/WardrobeGrid";
 import { OutfitsGrid } from "@/components/OutfitsGrid";
@@ -58,6 +58,20 @@ const Index = () => {
             className="px-4 py-2 text-sm font-body font-medium border-b-2 transition-colors border-transparent text-muted-foreground hover:text-foreground"
           >
             Recommendations
+          </button>
+          <button
+            onClick={() => navigate("/calendar")}
+            className="px-4 py-2 text-sm font-body font-medium border-b-2 transition-colors border-transparent text-muted-foreground hover:text-foreground flex items-center gap-1"
+          >
+            <Calendar className="h-4 w-4" />
+            Calendar
+          </button>
+          <button
+            onClick={() => navigate("/statistics")}
+            className="px-4 py-2 text-sm font-body font-medium border-b-2 transition-colors border-transparent text-muted-foreground hover:text-foreground flex items-center gap-1"
+          >
+            <BarChart3 className="h-4 w-4" />
+            Stats
           </button>
         </div>
 

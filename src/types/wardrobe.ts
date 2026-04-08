@@ -6,6 +6,7 @@ export interface WardrobeItem {
   imageUrl: string;
   category: Exclude<ClothingCategory, "All">;
   createdAt: number;
+  wearCount?: number; // Track how many times item was worn
 }
 
 export interface Outfit {
@@ -14,4 +15,14 @@ export interface Outfit {
   bottom?: WardrobeItem;
   shoes?: WardrobeItem;
   createdAt: number;
+  wearCount?: number; // Track how many times outfit was worn
+}
+
+export interface OutfitSchedule {
+  id: string;
+  outfitId: string;
+  dateISO: string; // ISO date string (YYYY-MM-DD)
+  createdAt: number;
+  worn?: boolean; // Mark if outfit was actually worn
+  wornDate?: number; // Timestamp of when it was worn
 }

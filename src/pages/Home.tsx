@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, Camera, Sparkles, Grid3X3 } from "lucide-react";
+import { ArrowRight, Camera, Sparkles, Grid3X3, Calendar, BarChart3 } from "lucide-react";
 import heroImage from "@/assets/hero-wardrobe.png";
 
 const Home = () => {
@@ -59,6 +59,31 @@ const Home = () => {
           Open My Wardrobe
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
         </button>
+
+        {/* Quick Links */}
+        <div className="grid grid-cols-3 gap-3 pt-4 animate-rise-in [animation-delay:700ms]">
+          <button
+            onClick={() => navigate("/recommendations")}
+            className="flex flex-col items-center gap-2 rounded-lg bg-card p-4 border border-border transition-all hover:border-foreground/30 hover:bg-accent"
+          >
+            <Sparkles className="h-5 w-5 text-primary" />
+            <span className="text-xs font-semibold text-foreground text-center">Recommendations</span>
+          </button>
+          <button
+            onClick={() => navigate("/calendar")}
+            className="flex flex-col items-center gap-2 rounded-lg bg-card p-4 border border-border transition-all hover:border-foreground/30 hover:bg-accent"
+          >
+            <Calendar className="h-5 w-5 text-primary" />
+            <span className="text-xs font-semibold text-foreground text-center">Calendar</span>
+          </button>
+          <button
+            onClick={() => navigate("/statistics")}
+            className="flex flex-col items-center gap-2 rounded-lg bg-card p-4 border border-border transition-all hover:border-foreground/30 hover:bg-accent"
+          >
+            <BarChart3 className="h-5 w-5 text-primary" />
+            <span className="text-xs font-semibold text-foreground text-center">Statistics</span>
+          </button>
+        </div>
       </div>
     </div>
   );
