@@ -137,7 +137,7 @@ const Index = () => {
                 </Button>
               )}
             </div>
-            <RecommendedOutfitsGrid recommendations={recommendations} />
+            <RecommendedOutfitsGrid recommendations={recommendations} onAdd={addOutfit} />
           </div>
         ) : activeTab === "calendar" ? (
           outfits.length === 0 ? (

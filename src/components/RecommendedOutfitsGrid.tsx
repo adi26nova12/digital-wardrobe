@@ -1,10 +1,12 @@
 import type { Outfit } from "@/types/wardrobe";
+import { Plus } from "lucide-react";
 
 interface RecommendedOutfitsGridProps {
   recommendations: Outfit[];
+  onAdd?: (outfit: Omit<Outfit, "id" | "createdAt">) => Promise<void>;
 }
 
-export function RecommendedOutfitsGrid({ recommendations }: RecommendedOutfitsGridProps) {
+export function RecommendedOutfitsGrid({ recommendations, onAdd }: RecommendedOutfitsGridProps) {
   if (recommendations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -15,14 +17,14 @@ export function RecommendedOutfitsGrid({ recommendations }: RecommendedOutfitsGr
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-3 gap-1">
       {recommendations.map((outfit, index) => (
         <div
           key={outfit.id}
           className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in border border-border transition-transform duration-300 hover:-translate-y-1"
           style={{ animationDelay: `${index * 55}ms` }}
         >
-          <div className="h-full w-full flex items-center justify-center p-3 bg-card/50 transition-transform duration-300 group-hover:scale-[1.02]">
+          <div className="h-full w-full flex items-center justify-center p-0.5 bg-card/50 transition-transform duration-300 group-hover:scale-[1.02]\">
             <div className="relative h-full w-full">
               {outfit.top && (
                 <div className="absolute top-[4%] left-1/2 h-[44%] w-[78%] -translate-x-1/2 flex items-center justify-center">
@@ -59,6 +61,16 @@ export function RecommendedOutfitsGrid({ recommendations }: RecommendedOutfitsGr
           <span className="absolute top-2 left-2 rounded-full bg-primary/90 px-2.5 py-0.5 text-xs font-body font-medium text-primary-foreground">
             Suggested
           </span>
+
+          {onAdd && (
+            <button
+              onClick={() => onAdd({ top: outfit.top, bottom: outfit.bottom, shoes: outfit.shoes })}
+              className="absolute top-2 right-2 rounded-full bg-background/80 p-1.5 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-primary hover:text-primary-foreground"
+              aria-label="Add outfit"
+            >
+              <Plus className="h-4 w-4" />
+            </button>
+          )}
         </div>
       ))}
     </div>

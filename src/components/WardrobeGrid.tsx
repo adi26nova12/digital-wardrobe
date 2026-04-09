@@ -70,7 +70,7 @@ export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }:
   }
   return (
     <>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-4 gap-1">
         {items.map((item, index) => (
           <div
             key={item.id}
@@ -80,7 +80,7 @@ export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }:
             <img
               src={item.imageUrl}
               alt={item.tag || item.category}
-              className="h-full w-full object-contain p-4 transition-transform duration-300 group-hover:scale-[1.03]"
+              className="h-full w-full object-contain p-1 transition-transform duration-300 group-hover:scale-[1.03]"
               loading="lazy"
             />
             <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">

@@ -17,7 +17,7 @@ export function OutfitsGrid({ outfits, onDelete }: OutfitsGridProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-3 gap-1">
       {outfits.map((outfit, index) => (
         <div
           key={outfit.id}
@@ -25,7 +25,7 @@ export function OutfitsGrid({ outfits, onDelete }: OutfitsGridProps) {
           style={{ animationDelay: `${index * 55}ms` }}
         >
           {/* Outfit display */}
-          <div className="h-full w-full flex items-center justify-center p-3 bg-card/50 transition-transform duration-300 group-hover:scale-[1.02]">
+          <div className="h-full w-full flex items-center justify-center p-0.5 bg-card/50 transition-transform duration-300 group-hover:scale-[1.02]">
             <div className="relative h-full w-full">
               {/* Top */}
               {outfit.top && (

@@ -9,7 +9,7 @@ import type { Outfit, WardrobeItem } from "@/types/wardrobe";
 
 const Recommendations = () => {
   const navigate = useNavigate();
-  const { allItems, outfits } = useWardrobe();
+  const { allItems, outfits, addOutfit } = useWardrobe();
   const [rerollSeed, setRerollSeed] = useState(0);
 
   const recommendations = useMemo(() => createRecommendations(allItems, outfits, rerollSeed), [allItems, outfits, rerollSeed]);
@@ -49,7 +49,7 @@ const Recommendations = () => {
       </header>
 
       <main className="px-5 pb-16 pt-2 animate-rise-in [animation-delay:120ms]">
-        <RecommendedOutfitsGrid recommendations={recommendations} />
+        <RecommendedOutfitsGrid recommendations={recommendations} onAdd={addOutfit} />
       </main>
     </div>
   );
