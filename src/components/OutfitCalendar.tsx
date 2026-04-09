@@ -33,6 +33,7 @@ export function OutfitCalendar({
 }: OutfitCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -127,10 +128,17 @@ export function OutfitCalendar({
             const today = isToday(day);
 
             return (
-              <Dialog key={day}>
+              <Dialog key={day} open={dialogOpen && selectedDate === dateISO} onOpenChange={(open) => {
+                setDialogOpen(open);
+                if (open) setSelectedDate(dateISO);
+                else setSelectedDate(null);
+              }}>
                 <DialogTrigger asChild>
                   <button
-                    onClick={() => setSelectedDate(dateISO)}
+                    onClick={() => {
+                      setSelectedDate(dateISO);
+                      setDialogOpen(true);
+                    }}
                     className={`aspect-square rounded-md p-0.5 text-xs font-medium transition-all hover:bg-accent flex flex-col items-center justify-start gap-0 cursor-pointer overflow-hidden relative ${
                       today
                         ? "bg-primary/10 border-2 border-primary"
@@ -204,8 +212,10 @@ export function OutfitCalendar({
                                 <>
                                   <Button
                                     onClick={() => {
-                                      onRemoveSchedule(dateISO);
-                                      setSelectedDate(null);
+                                      if (scheduleEntry) {
+                                        onRemoveSchedule(scheduleEntry.id);
+                                        setDialogOpen(false);
+                                      }
                                     }}
                                     variant="destructive"
                                     className="flex-1"
@@ -250,7 +260,7 @@ export function OutfitCalendar({
                                 key={outfitOption.id}
                                 onClick={() => {
                                   onScheduleOutfit(outfitOption.id, dateISO);
-                                  setSelectedDate(null);
+                                  setDialogOpen(false);
                                 }}
                                 className="group relative aspect-square rounded-lg bg-card overflow-hidden border border-border transition-all hover:border-foreground/30 hover:scale-105"
                               >
@@ -304,7 +314,7 @@ export function OutfitCalendar({
                                 key={outfitOption.id}
                                 onClick={() => {
                                   onScheduleOutfit(outfitOption.id, dateISO);
-                                  setSelectedDate(null);
+                                  setDialogOpen(false);
                                 }}
                                 className="group relative aspect-square rounded-lg bg-card overflow-hidden border border-amber-200/50 transition-all hover:border-amber-400 hover:scale-105"
                               >

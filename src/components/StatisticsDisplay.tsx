@@ -92,27 +92,27 @@ export function StatisticsDisplay({ stats }: StatisticsDisplayProps) {
       {stats.itemStats.length > 0 && (
         <div className="bg-card rounded-lg border border-border p-6">
           <h3 className="font-display text-lg font-semibold mb-4">Top 10 Most Worn Items</h3>
-          <div className="h-80 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={stats.itemStats.slice(0, 10).map((item) => ({
-                  name: `${item.item.category} (${item.wearCount}x)`,
-                  wears: item.wearCount,
-                }))}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="name"
-                  angle={-45}
-                  textAnchor="end"
-                  height={100}
-                  tick={{ fontSize: 12 }}
-                />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="wears" fill="#3b82f6" />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 gap-4">
+            {stats.itemStats.slice(0, 10).map((stat, index) => (
+              <div key={stat.item.id} className="flex flex-col items-center text-center">
+                <div className="relative w-full aspect-square rounded-lg bg-background border border-border overflow-hidden mb-2 hover:shadow-md transition-shadow">
+                  <img
+                    src={stat.item.imageUrl}
+                    alt={stat.item.tag || stat.item.category}
+                    className="h-full w-full object-cover"
+                  />
+                  <div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                    {index + 1}
+                  </div>
+                </div>
+                <p className="text-xs font-semibold text-foreground mb-1">
+                  {stat.wearCount}x
+                </p>
+                <p className="text-xs text-muted-foreground line-clamp-2">
+                  {stat.item.tag || stat.item.category}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       )}

@@ -47,8 +47,7 @@ export function RecommendedOutfitsGrid({ recommendations, onAdd }: RecommendedOu
               )}
 
               {outfit.shoes && (
-                <div className="absolute bottom-[2%] left-1/2 h-[18%] w-[86%] -translate-x-1/2 flex items-center justify-center">
-                  <img
+                <div className="absolute bottom-[-2%] left-1/2 h-[28%] w-[90%] -translate-x-1/2 flex items-center justify-center">                  <img
                     src={outfit.shoes.imageUrl}
                     alt="shoes"
                     className="h-full w-full object-contain"

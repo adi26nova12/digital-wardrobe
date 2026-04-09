@@ -118,26 +118,29 @@ const Index = () => {
         ) : activeTab === "outfits" ? (
           <OutfitsGrid outfits={outfits} onDelete={deleteOutfit} />
         ) : activeTab === "recommendations" ? (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-sm text-muted-foreground font-body">
-                  {recommendations.length} {recommendations.length === 1 ? "look" : "looks"} generated from your wardrobe
-                </h2>
+          <div className="space-y-8">
+            {/* Suggested Outfits */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-sm text-muted-foreground font-body">
+                    {recommendations.length} {recommendations.length === 1 ? "look" : "looks"} generated from your wardrobe
+                  </h2>
+                </div>
+                {recommendations.length > 0 && (
+                  <Button
+                    onClick={handleReroll}
+                    variant="ghost"
+                    size="sm"
+                    className="gap-1"
+                    title="Generate new recommendations"
+                  >
+                    <RotateCw className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
-              {recommendations.length > 0 && (
-                <Button
-                  onClick={handleReroll}
-                  variant="ghost"
-                  size="sm"
-                  className="gap-1"
-                  title="Generate new recommendations"
-                >
-                  <RotateCw className="h-4 w-4" />
-                </Button>
-              )}
+              <RecommendedOutfitsGrid recommendations={recommendations} onAdd={addOutfit} />
             </div>
-            <RecommendedOutfitsGrid recommendations={recommendations} onAdd={addOutfit} />
           </div>
         ) : activeTab === "calendar" ? (
           outfits.length === 0 ? (
