@@ -21,7 +21,7 @@ export function RecommendedOutfitsGrid({ recommendations, onAdd }: RecommendedOu
       {recommendations.map((outfit, index) => (
         <div
           key={outfit.id}
-          className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in border border-border transition-transform duration-300 hover:-translate-y-1"
+          className="smooth-card group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in border border-border"
           style={{ animationDelay: `${index * 55}ms` }}
         >
           <div className="h-full w-full flex items-center justify-center p-0.5 bg-card/50 transition-transform duration-300 group-hover:scale-[1.02]\">

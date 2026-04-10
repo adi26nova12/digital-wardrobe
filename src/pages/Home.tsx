@@ -6,7 +6,7 @@ const Home = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col animate-rise-in">
+    <div className="min-h-screen bg-transparent flex flex-col animate-rise-in">
       {/* Hero */}
       <div className="relative overflow-hidden">
         <img

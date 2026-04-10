@@ -74,7 +74,7 @@ export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }:
         {items.map((item, index) => (
           <div
             key={item.id}
-            className="group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in transition-transform duration-300 hover:-translate-y-1"
+            className="smooth-card group relative aspect-square rounded-lg bg-card overflow-hidden animate-fade-in"
             style={{ animationDelay: `${index * 55}ms` }}
           >
             <img

@@ -6,47 +6,47 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 7%;
+    --background: 286 30% 10%;
+    --foreground: 320 40% 96%;
 
-    --card: 0 0% 96%;
-    --card-foreground: 0 0% 7%;
+    --card: 287 26% 16%;
+    --card-foreground: 320 40% 96%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 7%;
+    --popover: 287 26% 14%;
+    --popover-foreground: 320 40% 96%;
 
-    --primary: 0 0% 0%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 320 90% 66%;
+    --primary-foreground: 286 35% 10%;
 
-    --secondary: 0 0% 96%;
-    --secondary-foreground: 0 0% 7%;
+    --secondary: 280 35% 24%;
+    --secondary-foreground: 320 40% 96%;
 
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
+    --muted: 284 28% 18%;
+    --muted-foreground: 318 22% 76%;
 
-    --accent: 0 0% 96%;
-    --accent-foreground: 0 0% 7%;
+    --accent: 300 68% 38%;
+    --accent-foreground: 320 45% 95%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 0% 7%;
+    --border: 294 32% 28%;
+    --input: 294 32% 28%;
+    --ring: 320 90% 66%;
 
     --radius: 0.75rem;
 
     --font-display: 'Playfair Display', Georgia, serif;
     --font-body: 'DM Sans', system-ui, sans-serif;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 286 30% 11%;
+    --sidebar-foreground: 320 40% 95%;
+    --sidebar-primary: 320 90% 66%;
+    --sidebar-primary-foreground: 286 35% 10%;
+    --sidebar-accent: 292 38% 20%;
+    --sidebar-accent-foreground: 320 40% 95%;
+    --sidebar-border: 294 32% 26%;
+    --sidebar-ring: 320 90% 66%;
   }
 }
 
@@ -57,10 +57,78 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    min-height: 100vh;
+    background-color: hsl(286 30% 10%);
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  .app-shell {
+    position: relative;
+    min-height: 100vh;
+    isolation: isolate;
+    z-index: 0;
+  }
+
+  .app-bg-video {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.92;
+    filter: saturate(1.25) brightness(1.15) contrast(1.05);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app-bg-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(circle at 20% 20%, hsl(330 96% 60% / 0.08), transparent 48%),
+      radial-gradient(circle at 80% 15%, hsl(286 92% 58% / 0.07), transparent 46%),
+      linear-gradient(180deg, hsl(287 34% 8% / 0.12), hsl(292 36% 7% / 0.18));
+  }
+
+  .app-content {
+    position: relative;
+    z-index: 2;
+    min-height: 100vh;
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    transition:
+      background-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .smooth-card {
+    will-change: transform, box-shadow;
+    transform: translateZ(0);
+    transition:
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .smooth-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px hsl(286 70% 5% / 0.34);
   }
 }
 
@@ -84,7 +152,7 @@
 @keyframes rise-in {
   from {
     opacity: 0;
-    transform: translateY(18px) scale(0.98);
+    transform: translateY(12px) scale(0.992);
   }
   to {
     opacity: 1;
@@ -102,11 +170,11 @@
 }
 
 .animate-rise-in {
-  animation: rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: rise-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-soft-zoom {
-  animation: soft-zoom 1.2s ease-out both;
+  animation: soft-zoom 0.9s ease-out both;
 }
 
 @media (prefers-reduced-motion: reduce) {

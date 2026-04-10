@@ -12,8 +12,8 @@ const CalendarPage = () => {
   const recommendations = createRecommendations(allItems, outfits);
 
   return (
-    <div className="min-h-screen bg-background animate-rise-in">
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm px-5 pt-8 pb-4 animate-rise-in [animation-delay:80ms]">
+    <div className="min-h-screen bg-transparent animate-rise-in">
+      <header className="sticky top-0 z-30 bg-background/55 backdrop-blur-md px-5 pt-8 pb-4 animate-rise-in [animation-delay:80ms]">
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1 text-sm text-muted-foreground font-body mb-3 hover:text-foreground transition-colors"
