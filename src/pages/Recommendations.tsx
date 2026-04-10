@@ -1,12 +1,10 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Sparkles, RotateCw, AlertCircle } from "lucide-react";
+import { ChevronLeft, Sparkles, RotateCw } from "lucide-react";
 import { RecommendedOutfitsGrid } from "@/components/RecommendedOutfitsGrid";
-import { WardrobeGrid } from "@/components/WardrobeGrid";
 import { Button } from "@/components/ui/button";
 import { useWardrobe } from "@/hooks/useWardrobe";
 import { createRecommendations } from "@/lib/recommendations";
-import type { Outfit, WardrobeItem } from "@/types/wardrobe";
 
 const Recommendations = () => {
   const navigate = useNavigate();
@@ -14,13 +12,6 @@ const Recommendations = () => {
   const [rerollSeed, setRerollSeed] = useState(0);
 
   const recommendations = useMemo(() => createRecommendations(allItems, outfits, rerollSeed), [allItems, outfits, rerollSeed]);
-
-  // Calculate least-worn items
-  const leastWornItems = useMemo(() => {
-    return allItems
-      .sort((a, b) => (a.wearCount || 0) - (b.wearCount || 0))
-      .slice(0, 4); // Show top 4 least-worn items
-  }, [allItems]);
 
   const handleReroll = () => {
     setRerollSeed((prev) => prev + 1);
@@ -67,19 +58,6 @@ const Recommendations = () => {
             <RecommendedOutfitsGrid recommendations={recommendations} onAdd={addOutfit} />
           </div>
 
-          {/* Least-Worn Items */}
-          {leastWornItems.length > 0 && (
-            <div>
-              <h2 className="text-lg font-semibold font-display mb-4 flex items-center gap-2">
-                <AlertCircle className="h-5 w-5" />
-                Neglected Pieces
-              </h2>
-              <p className="text-sm text-muted-foreground font-body mb-3">
-                These items haven't been worn much. Try incorporating them into your next outfit!
-              </p>
-              <WardrobeGrid items={leastWornItems} onDelete={() => {}} />
-            </div>
-          )}
         </div>
       </main>
     </div>
