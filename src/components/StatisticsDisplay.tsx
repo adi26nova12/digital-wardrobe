@@ -1,17 +1,25 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { Leaf } from "lucide-react";
 import type { WearStats } from "@/hooks/useWearStatistics";
+import type { WardrobeItem } from "@/types/wardrobe";
 
 const COLORS = ["#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#ec4899", "#14b8a6", "#f97316"];
 
 interface StatisticsDisplayProps {
   stats: WearStats;
+  allItems?: WardrobeItem[];
 }
 
-export function StatisticsDisplay({ stats }: StatisticsDisplayProps) {
+export function StatisticsDisplay({ stats, allItems = [] }: StatisticsDisplayProps) {
   const categoryData = Object.entries(stats.categoryBreakdown).map(([category, count]) => ({
     name: category,
     value: count,
   }));
+
+  // Calculate least worn items
+  const leastWornItems = allItems
+    .sort((a, b) => (a.wearCount || 0) - (b.wearCount || 0))
+    .slice(0, 4);
 
   return (
     <div className="space-y-8">
@@ -26,6 +34,47 @@ export function StatisticsDisplay({ stats }: StatisticsDisplayProps) {
           <p className="font-display text-3xl font-bold">{stats.totalOutfitWears}</p>
         </div>
       </div>
+
+      {/* Least Worn Items - Sustainability Spotlight */}
+      {leastWornItems.length > 0 && (
+        <div className="space-y-4 rounded-lg border border-primary/30 bg-card/80 p-5 backdrop-blur-sm">
+          <div>
+            <h2 className="font-display text-xl font-semibold flex items-center gap-2 mb-1">
+              <Leaf className="h-5 w-5 text-primary" />
+              Sustainability Spotlight
+            </h2>
+            <p className="text-sm text-muted-foreground font-body">
+              Rewear the least-used pieces in your wardrobe to reduce waste and get more value from what you already own.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {leastWornItems.map((item) => (
+              <div key={item.id} className="smooth-card rounded-lg bg-background/70 border border-border overflow-hidden p-3">
+                <div className="mb-3 flex aspect-square items-center justify-center overflow-hidden rounded-md bg-card/60">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.tag || item.category}
+                    className="h-full w-full object-contain p-2"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <p className="line-clamp-1 text-sm font-semibold leading-tight">
+                    {item.tag || item.category}
+                  </p>
+                  <span className="whitespace-nowrap rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
+                    {item.wearCount || 0} wears
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground font-body">
+                  Rewearing extends garment life and reduces unnecessary buying.
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Most Worn Item */}
       {stats.mostWornItem && (
@@ -120,7 +169,7 @@ export function StatisticsDisplay({ stats }: StatisticsDisplayProps) {
       {/* Top Worn Outfits */}
       {stats.outfitStats.length > 0 && (
         <div className="bg-card rounded-lg border border-border p-6">
-          <h3 className="font-display text-lg font-semibold mb-4">Top Wore Outfits</h3>
+          <h3 className="font-display text-lg font-semibold mb-4">Top Worn Outfits</h3>
           <div className="space-y-3">
             {stats.outfitStats.slice(0, 5).map((stat, index) => (
               <div key={stat.outfit.id} className="flex items-center gap-3 pb-3 border-b border-border last:border-0">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { WardrobeItem, ClothingCategory } from "@/types/wardrobe";
+import type { WardrobeItem, ClothingCategory, ClothingOccasion } from "@/types/wardrobe";
 import { Trash2, Edit2 } from "lucide-react";
 import {
   Dialog,
@@ -13,24 +13,28 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
 const itemCategories: Exclude<ClothingCategory, "All">[] = ["Tops", "Bottoms", "Shoes", "Outerwear"];
+const occasionOptions: Exclude<ClothingOccasion, "All">[] = ["Casual", "Formal", "Athletic", "Work", "Party", "Outdoor", "Weekend"];
 
 interface WardrobeGridProps {
   items: WardrobeItem[];
   onDelete: (id: string) => void;
   onUpdateTag?: (id: string, tag: string) => Promise<void>;
   onUpdateCategory?: (id: string, category: Exclude<ClothingCategory, "All">) => Promise<void>;
+  onUpdateOccasion?: (id: string, occasion: Exclude<ClothingOccasion, "All">) => Promise<void>;
 }
 
-export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }: WardrobeGridProps) {
+export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory, onUpdateOccasion }: WardrobeGridProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingTag, setEditingTag] = useState<string>("");
   const [editingCategory, setEditingCategory] = useState<Exclude<ClothingCategory, "All"> | null>(null);
+  const [editingOccasion, setEditingOccasion] = useState<Exclude<ClothingOccasion, "All"> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleEditClick = (item: WardrobeItem) => {
     setEditingId(item.id);
     setEditingTag(item.tag || "");
     setEditingCategory(item.category);
+    setEditingOccasion((item.occasion as Exclude<ClothingOccasion, "All">) || "Casual");
   };
 
   const handleSaveChanges = async () => {
@@ -44,9 +48,13 @@ export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }:
       if (onUpdateCategory && editingCategory) {
         await onUpdateCategory(editingId, editingCategory);
       }
+      if (onUpdateOccasion && editingOccasion) {
+        await onUpdateOccasion(editingId, editingOccasion);
+      }
       setEditingId(null);
       setEditingTag("");
       setEditingCategory(null);
+      setEditingOccasion(null);
     } catch (error) {
       console.error("Failed to update item:", error);
     } finally {
@@ -58,6 +66,7 @@ export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }:
     setEditingId(null);
     setEditingTag("");
     setEditingCategory(null);
+    setEditingOccasion(null);
   };
 
   if (items.length === 0) {
@@ -105,6 +114,11 @@ export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }:
               <p className="text-xs font-body font-medium text-foreground">
                 {item.tag || item.category}
               </p>
+              {item.occasion && (
+                <p className="text-xs font-body text-muted-foreground">
+                  {item.occasion}
+                </p>
+              )}
             </div>
           </div>
         ))}
@@ -131,6 +145,25 @@ export function WardrobeGrid({ items, onDelete, onUpdateTag, onUpdateCategory }:
                     )}
                   >
                     {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Occasion</label>
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {occasionOptions.map((occ) => (
+                  <button
+                    key={occ}
+                    onClick={() => setEditingOccasion(occ)}
+                    className={cn(
+                      "rounded-lg px-3 py-2 text-sm font-medium transition-all",
+                      editingOccasion === occ
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-secondary text-foreground hover:bg-muted"
+                    )}
+                  >
+                    {occ}
                   </button>
                 ))}
               </div>

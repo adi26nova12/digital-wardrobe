@@ -7,6 +7,7 @@ import Home from "./pages/Home.tsx";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Recommendations from "./pages/Recommendations.tsx";
+import WeatherRecommendations from "./pages/WeatherRecommendations.tsx";
 import Calendar from "./pages/Calendar.tsx";
 import Statistics from "./pages/Statistics.tsx";
 
@@ -25,6 +26,7 @@ const App = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/wardrobe" element={<Index />} />
                 <Route path="/recommendations" element={<Recommendations />} />
+                <Route path="/weather-recommendations" element={<WeatherRecommendations />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/statistics" element={<Statistics />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

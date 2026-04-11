@@ -93,6 +93,13 @@ export async function fetchWardrobeItems(): Promise<WardrobeItem[]> {
       category: item.category,
       imageUrl: item.image_url,
       tag: item.tag,
+      color: item.color,
+      style: item.style,
+      occasion: item.occasion,
+      thickness: item.thickness,
+      season: item.season,
+      material: item.material,
+      wearCount: item.wear_count,
       createdAt: new Date(item.created_at).getTime(),
     }));
   } catch (error) {
@@ -115,12 +122,23 @@ export async function deleteWardrobeItem(id: string): Promise<boolean> {
 
 export async function updateWardrobeItemTag(id: string, tag: string): Promise<boolean> {
   try {
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from("wardrobe_items")
       .update({ tag: tag || null })
-      .eq("id", id);
+      .eq("id", id)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Database error updating tag:", error);
+      return false;
+    }
+
+    // Check if any rows were actually updated
+    if (!data || data.length === 0) {
+      console.warn(`No rows updated for id ${id} - item may not exist in Supabase`);
+      return false;
+    }
+
     return true;
   } catch (error) {
     console.error("Failed to update wardrobe item tag:", error);
@@ -130,15 +148,90 @@ export async function updateWardrobeItemTag(id: string, tag: string): Promise<bo
 
 export async function updateWardrobeItemCategory(id: string, category: WardrobeItem["category"]): Promise<boolean> {
   try {
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from("wardrobe_items")
       .update({ category })
-      .eq("id", id);
+      .eq("id", id)
+      .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error("Database error updating category:", error);
+      return false;
+    }
+
+    if (!data || data.length === 0) {
+      console.warn(`No rows updated for id ${id} - item may not exist in Supabase`);
+      return false;
+    }
+
     return true;
   } catch (error) {
     console.error("Failed to update wardrobe item category:", error);
+    return false;
+  }
+}
+
+export async function updateWardrobeItemOccasion(id: string, occasion: WardrobeItem["occasion"]): Promise<boolean> {
+  try {
+    const { error, data } = await supabase
+      .from("wardrobe_items")
+      .update({ occasion })
+      .eq("id", id)
+      .select();
+
+    if (error) {
+      console.error("Database error updating occasion:", error);
+      return false;
+    }
+
+    if (!data || data.length === 0) {
+      console.warn(`No rows updated for id ${id} - item may not exist in Supabase`);
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Failed to update wardrobe item occasion:", error);
+    return false;
+  }
+}
+
+/**
+ * Sync (upsert) a wardrobe item to Supabase
+ * Creates it if it doesn't exist, otherwise updates it
+ */
+export async function syncWardrobeItem(item: WardrobeItem): Promise<boolean> {
+  try {
+    // Try to insert or update using upsert
+    const { error } = await supabase
+      .from("wardrobe_items")
+      .upsert(
+        {
+          id: item.id,
+          category: item.category,
+          image_url: item.imageUrl,
+          tag: item.tag || null,
+          color: item.color || null,
+          style: item.style || null,
+          occasion: item.occasion || null,
+          thickness: item.thickness || null,
+          season: item.season || null,
+          material: item.material || null,
+          wear_count: item.wearCount || 0,
+          created_at: new Date(item.createdAt).toISOString(),
+        },
+        { onConflict: "id" }
+      );
+
+    if (error) {
+      console.error(`Failed to sync item ${item.id} to Supabase:`, error);
+      return false;
+    }
+
+    console.log(`✓ Item ${item.id} synced to Supabase`);
+    return true;
+  } catch (error) {
+    console.error(`Failed to sync wardrobe item ${item.id}:`, error);
     return false;
   }
 }

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import type { Outfit, WardrobeItem, OutfitSchedule } from "@/types/wardrobe";
 
-interface WearStats {
+export interface WearStats {
   itemStats: Array<{
     item: WardrobeItem;
     category: string;

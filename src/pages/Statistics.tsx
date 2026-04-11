@@ -1,7 +1,5 @@
-import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, BarChart3, Leaf, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ChevronLeft, BarChart3 } from "lucide-react";
 import { StatisticsDisplay } from "@/components/StatisticsDisplay";
 import { useWardrobe } from "@/hooks/useWardrobe";
 import { useWearStatistics } from "@/hooks/useWearStatistics";
@@ -10,11 +8,6 @@ const Statistics = () => {
   const navigate = useNavigate();
   const { allItems, outfits, schedule } = useWardrobe();
   const stats = useWearStatistics(allItems, outfits, schedule);
-  const leastWornItems = useMemo(() => {
-    return [...allItems]
-      .sort((a, b) => (a.wearCount || 0) - (b.wearCount || 0))
-      .slice(0, 4);
-  }, [allItems]);
 
   const hasData = stats.totalItemWears > 0 || stats.totalOutfitWears > 0;
 
@@ -40,61 +33,6 @@ const Statistics = () => {
 
       <main className="px-5 pb-16 pt-2 animate-rise-in [animation-delay:120ms]">
         <div className="space-y-8">
-          <section className="space-y-4 rounded-lg border border-primary/30 bg-card/80 p-5 backdrop-blur-sm">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <h2 className="font-display text-xl font-semibold flex items-center gap-2 mb-1">
-                  <Leaf className="h-5 w-5 text-primary" />
-                  Sustainability Spotlight
-                </h2>
-                <p className="text-sm text-muted-foreground font-body">
-                  Rewear the least-used pieces in your wardrobe to reduce waste and get more value from what you already own.
-                </p>
-              </div>
-              <Button
-                onClick={() => navigate("/wardrobe")}
-                variant="outline"
-                size="sm"
-                className="shrink-0 gap-1"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Review wardrobe
-              </Button>
-            </div>
-
-            {leastWornItems.length > 0 ? (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {leastWornItems.map((item) => (
-                  <div key={item.id} className="smooth-card rounded-lg bg-background/70 border border-border overflow-hidden p-3">
-                    <div className="mb-3 flex aspect-square items-center justify-center overflow-hidden rounded-md bg-card/60">
-                      <img
-                        src={item.imageUrl}
-                        alt={item.tag || item.category}
-                        className="h-full w-full object-contain p-2"
-                        loading="lazy"
-                      />
-                    </div>
-                    <div className="mb-1 flex items-center justify-between gap-2">
-                      <p className="line-clamp-1 text-sm font-semibold leading-tight">
-                        {item.tag || item.category}
-                      </p>
-                      <span className="whitespace-nowrap rounded-full bg-primary/15 px-2 py-0.5 text-[11px] font-semibold text-primary">
-                        {item.wearCount || 0} wears
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground font-body">
-                      Rewearing extends garment life and reduces unnecessary buying.
-                    </p>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-lg border border-dashed border-border/70 bg-background/50 p-4 text-sm text-muted-foreground">
-                Add wardrobe items to see which pieces are being worn the least.
-              </div>
-            )}
-          </section>
-
           {!hasData ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <p className="font-display text-2xl text-muted-foreground mb-2">No wear data yet</p>
@@ -109,7 +47,7 @@ const Statistics = () => {
               </button>
             </div>
           ) : (
-            <StatisticsDisplay stats={stats} />
+            <StatisticsDisplay stats={stats} allItems={allItems} />
           )}
         </div>
       </main>
