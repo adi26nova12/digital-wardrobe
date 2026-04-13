@@ -9,7 +9,7 @@
 5. Copy the SQL from `supabase/migrations/setup_wardrobe_tables.sql`
 6. Paste it into the SQL editor
 7. Click **Run**
-
+                                                                                                                                                        
 The script will create:
 - ✅ `wardrobe_items` table
 - ✅ `outfits` table
